@@ -5,6 +5,7 @@ import { compare } from "bcrypt";
 import compare_passwords from "../../utils/compare.js";
 import generate_token from "../../utils/generate_token.js";
 import create_hash_password from "../../utils/create_hash_password.js";
+import verify_token from "../../utils/verify.js";
 
 export default async function authRoutes(app: FastifyTypeInstance) {
   app.post(
@@ -35,10 +36,12 @@ export default async function authRoutes(app: FastifyTypeInstance) {
           }),
 
           400: z.object({
+            token: z.string(),
             data: z.null(),
             message: z.string(),
           }),
           500: z.object({
+            token: z.string(),
             data: z.null(),
             message: z.string(),
           }),
@@ -54,7 +57,7 @@ export default async function authRoutes(app: FastifyTypeInstance) {
         if (!user) {
           return res
             .status(400)
-            .send({ data: null, message: "Credenciais inválidas" });
+            .send({ data: null, message: "Credenciais inválidas", token: "" });
         }
 
         const hash = user.password;
@@ -63,7 +66,7 @@ export default async function authRoutes(app: FastifyTypeInstance) {
         if (!verify) {
           return res
             .status(400)
-            .send({ data: null, message: "Credenciais inválidas" });
+            .send({ data: null, message: "Credenciais inválidas", token: "" });
         }
 
         const token = generate_token(reminder, user.id);
@@ -83,17 +86,20 @@ export default async function authRoutes(app: FastifyTypeInstance) {
           return res.code(400).send({
             message: "Erro de validação",
             data: null,
+            token: "",
           });
         }
         if (error instanceof Error) {
           return res.code(500).send({
             message: error.message,
             data: null,
+            token: "",
           });
         }
         return res.code(500).send({
           message: "Erro interno",
           data: null,
+          token: "",
         });
       }
     }
@@ -183,6 +189,85 @@ export default async function authRoutes(app: FastifyTypeInstance) {
           });
         }
         return res.code(500).send({
+          message: "Erro interno",
+          data: null,
+        });
+      }
+    }
+  );
+
+  app.post(
+    "/verify",
+    {
+      schema: {
+        description: "Rota para verificar token",
+        tags: ["Auth"],
+        body: z.object({
+          token: z.string(),
+        }),
+        response: {
+          200: z.object({
+            valid: z.boolean().default(true),
+            token: z.string(),
+            data: z.object({
+              id: z.cuid(),
+              email: z.email(),
+              createdAt: z.iso.datetime(),
+              updatedAt: z.iso.datetime(),
+              name: z.string(),
+            }),
+          }),
+          400: z.object({
+            valid: z.boolean().default(false),
+            token: z.string(),
+            data: z.null(),
+            message: z.string(),
+          }),
+          500: z.object({
+            valid: z.boolean().default(false),
+            token: z.string(),
+            data: z.null(),
+            message: z.string(),
+          }),
+        },
+      },
+    },
+    async (req, res) => {
+      try {
+        const { token } = req.body;
+        const verify = await verify_token(token);
+
+        if (verify.valid === false) {
+          return res.status(400).send({
+            message: "Token inválido",
+            token: "",
+            valid: false,
+            data: null,
+          });
+        }
+        return res.status(200).send({
+          valid: true,
+          token,
+          data: {
+            id: verify.user!.id,
+            email: verify.user!.email,
+            name: verify.user!.name,
+            createdAt: verify.user!.createdAt.toISOString(),
+            updatedAt: verify.user!.updatedAt.toISOString(),
+          },
+        });
+      } catch (error) {
+        if (error instanceof ZodError) {
+          return res.code(400).send({
+            token: "",
+            valid: false,
+            message: "Erro de validação",
+            data: null,
+          });
+        }
+        return res.code(500).send({
+          token: "",
+          valid: false,
           message: "Erro interno",
           data: null,
         });

@@ -1,4 +1,7 @@
+web/.env
+server/.env
 .env
 server/node_modules
 web/node_modules
 web/dist
+web/.next

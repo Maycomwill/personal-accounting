@@ -1,4 +1,4 @@
-import { AuthContext, AuthContextProps } from "@/context";
+import { AuthContext, type AuthContextProps } from "../context/auth.tsx";
 import { useContext } from "react";
 
 export default function useAuth(): AuthContextProps {

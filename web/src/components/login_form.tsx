@@ -1,7 +1,7 @@
 "use client";
 import useAuth from "@/hooks/useAuth";
 import clsx from "clsx";
-import { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");

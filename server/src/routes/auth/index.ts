@@ -175,8 +175,8 @@ export default async function authRoutes(app: FastifyTypeInstance) {
           data: {
             id: user.id,
             email: user.email,
-            createdAt: user.createdAt.toDateString(),
-            updatedAt: user.updatedAt.toDateString(),
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: user.updatedAt.toISOString(),
             name: user.name,
           },
           message: "Usuário criado com sucesso",
@@ -265,12 +265,14 @@ export default async function authRoutes(app: FastifyTypeInstance) {
             data: null,
           });
         }
-        return res.code(500).send({
-          token: "",
-          valid: false,
-          message: "Erro interno",
-          data: null,
-        });
+        if (error instanceof Error) {
+          return res.code(500).send({
+            token: "",
+            valid: false,
+            message: error.message,
+            data: null,
+          });
+        }
       }
     }
   );

@@ -1,6 +1,7 @@
 import z, { ZodError } from "zod";
 import type { FastifyTypeInstance } from "../types.js";
 import db from "../db/client.js";
+import { create } from "domain";
 
 export default async function categoriesRoutes(app: FastifyTypeInstance) {
   app.post(
@@ -151,6 +152,30 @@ export default async function categoriesRoutes(app: FastifyTypeInstance) {
               z.object({
                 id: z.cuid(),
                 name: z.string(),
+                createdAt: z.iso.datetime(),
+                updatedAt: z.iso.datetime(),
+                expenses: z.array(
+                  z.object({
+                    id: z.string(),
+                    amount: z.number(),
+                    userId: z.string(),
+                    name: z.string(),
+                    createdAt: z.iso.datetime(),
+                    updatedAt: z.iso.datetime(),
+                    categoryId: z.string(),
+                  })
+                ),
+                incomings: z.array(
+                  z.object({
+                    id: z.string(),
+                    amount: z.number(),
+                    userId: z.string(),
+                    name: z.string(),
+                    createdAt: z.iso.datetime(),
+                    updatedAt: z.iso.datetime(),
+                    categoryId: z.string(),
+                  })
+                ),
               })
             ),
           }),
@@ -163,10 +188,29 @@ export default async function categoriesRoutes(app: FastifyTypeInstance) {
     },
     async (req, res) => {
       try {
-        const categories = await db.category.findMany();
+        const categories = await db.category.findMany({
+          include: {
+            Expense: true,
+            Incomings: true,
+          },
+        });
         return res.code(200).send({
           message: "Categorias listadas com sucesso",
-          data: categories,
+          data: categories.map((category) => ({
+            ...category,
+            createdAt: category.createdAt.toISOString(),
+            updatedAt: category.updatedAt.toISOString(),
+            expenses: category.Expense.map((expense) => ({
+              ...expense,
+              createdAt: expense.createdAt.toISOString(),
+              updatedAt: expense.updatedAt.toISOString(),
+            })),
+            incomings: category.Incomings.map((incoming) => ({
+              ...incoming,
+              createdAt: incoming.createdAt.toISOString(),
+              updatedAt: incoming.updatedAt.toISOString(),
+            })),
+          })),
         });
       } catch (error) {
         if (error instanceof Error) {

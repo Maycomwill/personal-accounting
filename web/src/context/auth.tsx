@@ -1,9 +1,7 @@
-"use client";
 import server from "@/api/server";
-import { LoginResponse, User, VerifyResponse } from "@/interfaces";
-import { AxiosError, AxiosResponse } from "axios";
-import { verify } from "crypto";
-import { createContext, ReactNode, useEffect, useState } from "react";
+import type { LoginResponse, User, VerifyResponse } from "@/interfaces";
+import { AxiosError, type AxiosResponse } from "axios";
+import { createContext, type ReactNode, useEffect, useState } from "react";
 
 export interface AuthContextProps {
   logged: boolean;
@@ -13,6 +11,7 @@ export interface AuthContextProps {
   user: User | undefined;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext({} as AuthContextProps);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -84,7 +83,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function logout() {}
+  function logout() {
+    setLoading(true);
+    window.localStorage.removeItem("token");
+    setUser(undefined);
+    setLogged(false);
+    setLoading(false);
+    location.reload();
+  }
   return (
     <AuthContext.Provider value={{ user, logged, login, logout, loading }}>
       {children}

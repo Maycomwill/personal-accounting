@@ -1,14 +1,15 @@
 import useAuth from "@/hooks/useAuth";
 import clsx from "clsx";
-import { FaPlus } from "react-icons/fa";
-import { Button } from "./ui/button";
 import useData from "@/hooks/useData";
-import type { Category } from "@/interfaces";
 import { useEffect } from "react";
+import CreateCategoryDialog from "./create_category_dialog";
+import Dashboard from "./dashboard";
+import SelectPeriodDialog from "./select_period_dialog";
+import CreateTransactionDialog from "./create_transaction_dialog";
 
 function Home() {
   const { loading, logout } = useAuth();
-  const { getCategories, categories, loading: data_loading } = useData();
+  const { getCategories } = useData();
 
   useEffect(() => {
     getCategories();
@@ -31,19 +32,12 @@ function Home() {
         </button>
       </div>
       <div>
-        <h1>Dashboard</h1>
-        <div className={clsx("block", { invisible: data_loading })}>
-          {categories.map((category: Category, index: number) => {
-            return <p key={index}>{category.name}</p>;
-          })}
-        </div>
-        <div className="flex gap-4 items-center">
-          <button className="bg-white/10 p-4 rounded-full hover:bg-cyan-500 transition-colors duration-150 ease-in-out cursor-pointer hover:shadow-md">
-            <FaPlus className="size-8" />
-          </button>
-          <Button variant={"secondary"} size={"lg"}>
-            Criar categoria
-          </Button>
+        <Dashboard />
+        <div className="flex gap-4 items-center justify-center">
+          <CreateTransactionDialog />
+    
+          <CreateCategoryDialog />
+          <SelectPeriodDialog />
         </div>
       </div>
     </div>

@@ -49,11 +49,11 @@ export default function LoginForm() {
         <button
           className="uppercase text-lg p-2  bg-white/5 font-display rounded-lg"
           type="submit"
+          disabled={loading}
         >
           <div
             className={clsx(
-              "bg-gradient-to-tr from-blue-500 via-cyan-500 to-cyan-300 bg-clip-text text-transparent",
-              loading && "disabled"
+              "bg-gradient-to-tr from-blue-500 via-cyan-500 to-cyan-300 bg-clip-text text-transparent"
             )}
           >
             login

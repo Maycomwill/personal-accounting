@@ -12,6 +12,7 @@ import authRoutes from "./routes/auth/index.js";
 import categoriesRoutes from "./routes/categories.js";
 import incomingsRoutes from "./routes/incomings.js";
 import expensesRoutes from "./routes/expenses.js";
+import transactionsRoutes from "./routes/transactions.js";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -20,6 +21,7 @@ app.setValidatorCompiler(validatorCompiler);
 
 app.register(fastifyCors, {
   origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"],
 });
 
 app.get("/", function (_, reply) {
@@ -45,6 +47,7 @@ app.register(authRoutes, { prefix: "/v1/auth" });
 app.register(categoriesRoutes, { prefix: "/v1/category" });
 app.register(incomingsRoutes, { prefix: "/v1/incoming" });
 app.register(expensesRoutes, { prefix: "/v1/expense" });
+app.register(transactionsRoutes, { prefix: "/v1/transaction" });
 
 app.listen({ port: 4000, host: "0.0.0.0" }, function (err, address) {
   if (err) {

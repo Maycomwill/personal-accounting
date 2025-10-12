@@ -1,6 +1,7 @@
 import z, { ZodError } from "zod";
 import type { FastifyTypeInstance } from "../types.js";
 import db from "../db/client.js";
+import verify_token from "../utils/verify.js";
 
 export default async function expensesRoutes(app: FastifyTypeInstance) {
   app.post(
@@ -10,17 +11,18 @@ export default async function expensesRoutes(app: FastifyTypeInstance) {
         tags: ["Expenses"],
         description: "Criar uma nova despesa",
         body: z.object({
-          amount: z.number().negative(),
+          amount: z.number(),
           categoryId: z.cuid(),
-          userId: z.cuid(),
+          token: z.jwt(),
           name: z.string(),
+          createdAt: z.iso.datetime(),
         }),
         response: {
           201: z.object({
             message: z.string(),
             data: z.object({
               id: z.cuid(),
-              amount: z.number().negative(),
+              amount: z.number(),
               userId: z.cuid(),
               name: z.string(),
               categoryId: z.cuid(),
@@ -41,25 +43,27 @@ export default async function expensesRoutes(app: FastifyTypeInstance) {
     },
     async (req, res) => {
       try {
-        const { amount, name, categoryId, userId } = req.body;
+        const { amount, name, categoryId, token, createdAt } = req.body;
         const category = await db.category.findUnique({
           where: { id: categoryId },
         });
-        const user = await db.user.findUnique({
-          where: { id: userId },
-        });
-        if (!user || !category) {
+        if (!category) {
           return res.code(400).send({
             message: "Usuário ou categoria não encontrado",
             data: null,
           });
         }
+        const verified_token = await verify_token(token);
+        if (verified_token.valid === false)
+          return res.code(400).send({ message: "Token inválido", data: null });
+
         const expense = await db.expense.create({
           data: {
             amount,
             name,
-            userId,
+            userId: verified_token.user!.id,
             categoryId,
+            createdAt,
           },
         });
         return res.code(201).send({
@@ -171,7 +175,7 @@ export default async function expensesRoutes(app: FastifyTypeInstance) {
             data: z.array(
               z.object({
                 id: z.cuid(),
-                amount: z.number().negative(),
+                amount: z.number(),
                 userId: z.cuid(),
                 categoryId: z.cuid(),
                 createdAt: z.iso.datetime(),

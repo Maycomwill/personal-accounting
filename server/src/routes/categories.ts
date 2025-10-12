@@ -1,7 +1,7 @@
 import z, { ZodError } from "zod";
 import type { FastifyTypeInstance } from "../types.js";
 import db from "../db/client.js";
-import { create } from "domain";
+import verify_token from "../utils/verify.js";
 
 export default async function categoriesRoutes(app: FastifyTypeInstance) {
   app.post(
@@ -12,6 +12,7 @@ export default async function categoriesRoutes(app: FastifyTypeInstance) {
         description: "Cria uma nova categoria",
         body: z.object({
           name: z.string().min(3).max(30),
+          token: z.string(),
         }),
         response: {
           201: z.object({
@@ -34,7 +35,7 @@ export default async function categoriesRoutes(app: FastifyTypeInstance) {
     },
     async (req, res) => {
       try {
-        const { name } = req.body;
+        const { name, token } = req.body;
         const existingCategory = await db.category.findFirst({
           where: { name },
         });
@@ -44,6 +45,11 @@ export default async function categoriesRoutes(app: FastifyTypeInstance) {
             data: null,
           });
         }
+        
+        const verified_token = await verify_token(token);
+        if (verified_token.valid === false)
+          return res.code(400).send({ message: "Token inválido", data: null });
+
         const category = await db.category.create({
           data: {
             name,

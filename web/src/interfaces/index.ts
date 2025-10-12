@@ -1,11 +1,3 @@
-export type User = {
-  id: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-};
-
 export type LoginResponse = {
   token: string;
   data: User | undefined;
@@ -22,8 +14,38 @@ export type VerifyResponse = {
 export type CategoryListResponse = {
   message: string;
   data: Category[];
-  
-}
+};
+
+export type CreateCategoryResponse = {
+  message: string;
+  data: {
+    name: string;
+    id: string;
+  } | null;
+};
+
+export type ListMonthlyTransactionsResponse = {
+  message: string;
+  data: {
+    userId: string;
+    period: {
+      month: number;
+      year: number;
+    };
+    transactions: {
+      expenses: Expense[];
+      incomings: Incoming[];
+    };
+  };
+};
+
+export type User = {
+  id: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+};
 
 export type Category = {
   name: string;
@@ -52,4 +74,13 @@ export type Expense = {
   categoryId: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type Transactions = {
+  expenses: Expense[];
+  incomings: Incoming[];
+  period: {
+    month: number;
+    year: number;
+  };
 };

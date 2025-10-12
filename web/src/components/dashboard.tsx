@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import type { Expense, Incoming } from "@/interfaces";
 import Loading from "./loading";
 import DeleteTransactionDialog from "./delete_transaction_dialog";
+import { HandleCategoryIcon } from "@/assets/CategoryIcons";
+import { PiggyBank } from "lucide-react";
 
 function Dashboard() {
   const { getTransactions, loading, transactions, categories } = useData();
@@ -45,7 +47,13 @@ function Dashboard() {
       currency: "BRL",
     });
   }
-
+  function handleCategory(categoryId: string) {
+    const categoryName = categories.find((cat) => cat.id === categoryId)?.name;
+    if (!categoryName) {
+      return <PiggyBank />;
+    }
+    return HandleCategoryIcon(categoryName);
+  }
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
       <h1 className="w-full flex items-center justify-center text-2xl uppercase font-display">
@@ -89,11 +97,7 @@ function Dashboard() {
                           })}
                         </TableCell>
                         <TableCell>
-                          {
-                            categories.find(
-                              (cat) => cat.id === incoming.categoryId
-                            )?.name
-                          }
+                          {handleCategory(incoming.categoryId)}
                         </TableCell>
                         <TableCell>
                           {format(incoming.createdAt, "dd/MM")}
@@ -123,11 +127,7 @@ function Dashboard() {
                           })}
                         </TableCell>
                         <TableCell>
-                          {
-                            categories.find(
-                              (cat) => cat.id === expense.categoryId
-                            )?.name
-                          }
+                          {handleCategory(expense.categoryId)}
                         </TableCell>
                         <TableCell>
                           {format(expense.createdAt, "dd/MM")}

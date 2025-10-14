@@ -90,8 +90,6 @@ export default async function transactionsRoutes(app: FastifyTypeInstance) {
             },
           },
         });
-        console.log(month, year);
-
         return res.code(200).send({
           message: "Sucesso",
           data: {

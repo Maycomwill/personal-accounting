@@ -59,7 +59,7 @@ function Dashboard() {
       <h1 className="w-full flex items-center justify-center text-2xl uppercase font-display">
         Dashboard
       </h1>
-      <div className="w-full px-1">
+      <div className="w-full">
         {loading ? (
           <Loading />
         ) : (
@@ -73,11 +73,11 @@ function Dashboard() {
               </TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[150px]">Movimentação</TableHead>
-                  <TableHead>Valor</TableHead>
-                  <TableHead>Categoria</TableHead>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Ações</TableHead>
+                  <TableHead className="max-w-[120px]">Nome</TableHead>
+                  <TableHead className="max-w-[60px]">Valor</TableHead>
+                  <TableHead className="max-w-[20px]">Tipo</TableHead>
+                  <TableHead className="max-w-[40px]">Data</TableHead>
+                  <TableHead className="max-w-[50px]">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -85,7 +85,7 @@ function Dashboard() {
                   transactions.incomings.map((incoming: Incoming) => {
                     return (
                       <TableRow
-                        className="bg-green-500/5 hover:bg-green-500/10"
+                        className="bg-green-500/10 hover:bg-green-500/20"
                         key={incoming.id}
                       >
                         <TableCell>{incoming.name}</TableCell>
@@ -102,7 +102,7 @@ function Dashboard() {
                         <TableCell>
                           {format(incoming.createdAt, "dd/MM")}
                         </TableCell>
-                        <TableCell className="flex space-x-2 items-center justify-center">
+                        <TableCell className="flex space-x-2 items-center justify-start">
                           <DeleteTransactionDialog
                             id={incoming.id}
                             type={"incoming"}
@@ -115,7 +115,7 @@ function Dashboard() {
                   transactions.expenses.map((expense: Expense) => {
                     return (
                       <TableRow
-                        className="bg-red-500/5 hover:bg-red-500/10"
+                        className="bg-red-500/10 hover:bg-red-500/20"
                         key={expense.id}
                       >
                         <TableCell>{expense.name}</TableCell>
@@ -132,7 +132,7 @@ function Dashboard() {
                         <TableCell>
                           {format(expense.createdAt, "dd/MM")}
                         </TableCell>
-                        <TableCell className="flex space-x-2 items-center justify-center">
+                        <TableCell className="flex space-x-2 items-center justify-start">
                           <DeleteTransactionDialog
                             id={expense.id}
                             type={"expense"}
@@ -160,7 +160,7 @@ function Dashboard() {
                 <TableBody>
                   {transactions && (
                     <TableRow>
-                      <TableCell className="bg-green-500/5">
+                      <TableCell className="bg-green-500/10">
                         {sumValues(transactions!.incomings).toLocaleString(
                           "pt-BR",
                           {
@@ -170,7 +170,7 @@ function Dashboard() {
                           }
                         )}
                       </TableCell>
-                      <TableCell className="bg-red-500/5">
+                      <TableCell className="bg-red-500/10">
                         -
                         {sumValues(transactions!.expenses).toLocaleString(
                           "pt-BR",
@@ -181,7 +181,7 @@ function Dashboard() {
                           }
                         )}
                       </TableCell>
-                      <TableCell className="bg-cyan-500/5 font-bold">
+                      <TableCell className="bg-cyan-500/10 font-bold">
                         {yieldValues(
                           sumValues(transactions!.incomings),
                           sumValues(transactions!.expenses)

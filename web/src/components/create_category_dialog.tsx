@@ -22,7 +22,7 @@ function CreateCategoryDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"link"} size={"lg"}>
+        <Button className="w-1/2" variant={"link"} size={"lg"}>
           Criar categoria
         </Button>
       </DialogTrigger>

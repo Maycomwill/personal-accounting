@@ -24,10 +24,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function verify_token() {
+    setLoading(true);
     const token = window.localStorage.getItem("token");
     if (!token)
       return (
         setLogged(false),
+        setLoading(false),
         setUser(undefined),
         window.localStorage.removeItem("token")
       );
@@ -38,14 +40,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         { token }
       );
 
-      setUser(server_response.data.user);
-      setLogged(true);
-      setLoading(false);
-      return;
+      return setTimeout(() => {
+        setUser(server_response.data.user);
+        setLogged(true);
+        setLoading(false);
+      }, 500);
     } catch (error) {
       if (error instanceof AxiosError) {
         setUser(undefined);
         setLogged(false);
+        setLoading(false);
         window.localStorage.removeItem("token");
         return;
       }
@@ -67,16 +71,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           reminder,
         }
       );
-      console.log(server_response.data);
-      window.localStorage.setItem("token", server_response.data.token);
-      setUser(server_response.data.data);
-      setLogged(true);
-      location.reload();
-      return;
+      // console.log(server_response.data);
+
+      return setTimeout(() => {
+        window.localStorage.setItem("token", server_response.data.token);
+        setUser(server_response.data.data);
+        setLogged(true);
+        setLoading(false);
+        location.reload();
+      }, 1500);
     } catch (error) {
       if (error instanceof AxiosError) {
         window.localStorage.removeItem("token");
         setLogged(false);
+        setUser(undefined);
         setLoading(false);
         return;
       }

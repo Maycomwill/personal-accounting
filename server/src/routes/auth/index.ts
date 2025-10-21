@@ -157,10 +157,11 @@ export default async function authRoutes(app: FastifyTypeInstance) {
             .send({ data: null, message: "Email já cadastrado" });
         }
         const hash_password = create_hash_password(password);
+        const lower_name = name.toLowerCase();
         const user = await db.user.create({
           data: {
             email,
-            name,
+            name: lower_name,
             password: hash_password,
           },
         });

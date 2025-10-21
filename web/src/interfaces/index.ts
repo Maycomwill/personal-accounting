@@ -4,6 +4,17 @@ export type LoginResponse = {
   message: string;
 };
 
+export type RegisterResponse = {
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    createdAt: string;
+    updatedAt: string;
+  } | null;
+};
+
 export type VerifyResponse = {
   valid: boolean;
   token: string;

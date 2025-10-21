@@ -1,11 +1,22 @@
 import server from "@/api/server";
-import type { LoginResponse, User, VerifyResponse } from "@/interfaces";
+import type {
+  LoginResponse,
+  RegisterResponse,
+  User,
+  VerifyResponse,
+} from "@/interfaces";
 import { AxiosError, type AxiosResponse } from "axios";
 import { createContext, type ReactNode, useEffect, useState } from "react";
 
 export interface AuthContextProps {
   logged: boolean;
   login: (email: string, password: string, reminder: boolean) => void;
+  register: (
+    email: string,
+    name: string,
+    password: string,
+    confirmPassword: string
+  ) => void;
   logout: () => void;
   loading: boolean;
   user: User | undefined;
@@ -56,6 +67,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function register(
+    email: string,
+    name: string,
+    password: string,
+    confirmPassword: string
+  ) {
+    setLoading(true);
+
+    try {
+      if (password !== confirmPassword) {
+        setLoading(false);
+        return alert("As senhas não são iguais");
+      }
+
+      const server_response: AxiosResponse<RegisterResponse> =
+        await server.post("/v1/auth/register", {
+          email,
+          name,
+          password,
+        });
+
+      console.log(server_response.data);
+      return setTimeout(() => {
+        setLoading(false);
+        location.replace("/");
+      }, 2500);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setLoading(false);
+        return;
+      }
+    }
+  }
+
   async function login(email: string, password: string, reminder: boolean) {
     setLoading(true);
     if (email === "" || password === "") {
@@ -100,7 +145,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     location.reload();
   }
   return (
-    <AuthContext.Provider value={{ user, logged, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ user, register, logged, login, logout, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

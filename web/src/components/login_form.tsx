@@ -89,7 +89,7 @@ export default function LoginForm() {
           Esqueci minha senha
         </a>
         <a
-          href="#"
+          href="/register"
           className="text-white/60 hover:underline underline-offset-3 hover:text-cyan-500 transition-colors duration-100 ease-in-out text-sm"
         >
           Criar minha conta

@@ -4,8 +4,8 @@ import { Label } from "./ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import useAuth from "@/hooks/useAuth";
-import Loading from "./loading";
 import clsx from "clsx";
+import { Spinner } from "./ui/spinner";
 
 function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -154,7 +154,7 @@ function RegisterPage() {
           { hidden: !loading }
         )}
       >
-        <Loading size={124} />
+        <Spinner className="text-cyan-500 size-124" />
       </div>
     </div>
   );

@@ -11,10 +11,10 @@ import {
 } from "./ui/table";
 import { useEffect, useState } from "react";
 import type { Expense, Incoming } from "@/interfaces";
-import Loading from "./loading";
 import DeleteTransactionDialog from "./delete_transaction_dialog";
 import { HandleCategoryIcon } from "@/assets/CategoryIcons";
 import { PiggyBank } from "lucide-react";
+import { Spinner } from "./ui/spinner";
 
 function Dashboard() {
   const { getTransactions, loading, transactions, categories } = useData();
@@ -61,7 +61,9 @@ function Dashboard() {
       </h1>
       <div className="w-full">
         {loading ? (
-          <Loading />
+          <div className="w-full flex items-center justify-center">
+            <Spinner  className="text-cyan-500 size-24 text-center" />
+          </div>
         ) : (
           <div className="w-full flex flex-col my-4">
             <Table>

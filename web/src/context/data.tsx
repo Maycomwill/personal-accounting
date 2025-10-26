@@ -7,6 +7,7 @@ import type {
 } from "@/interfaces";
 import { AxiosError, type AxiosResponse } from "axios";
 import { createContext, useState, type ReactNode } from "react";
+import { toast } from "sonner";
 
 export type DataContextProps = {
   categories: Category[];
@@ -68,10 +69,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
           token,
         }
       );
-      alert(server_response.data.message);
-      getCategories();
-      setLoading(false);
-      return;
+      toast.success(server_response.data.message);
+
+      return setTimeout(() => {
+        getCategories();
+        setLoading(false);
+      }, 500);
     } catch (error) {
       if (error instanceof AxiosError) {
         setLoading(false);
@@ -157,7 +160,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
           year: new Date(correct_date).getFullYear(),
         });
         setLoading(false);
-        return alert(server_response.data.message);
+        return toast.success(server_response.data.message);
       }
 
       setLoading(false);
@@ -165,7 +168,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       if (error instanceof AxiosError) {
         setLoading(false);
-        return alert(error.response?.data.message);
+        return toast.error(error.response?.data.message);
       }
     }
   }
@@ -189,7 +192,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
           year: new Date().getFullYear(),
         });
         setLoading(false);
-        return alert(server_response.data.message);
+        return toast.success(server_response.data.message);
       }
 
       setLoading(false);
@@ -197,7 +200,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       if (error instanceof AxiosError) {
         setLoading(false);
-        return alert(error.response?.data.message);
+        return toast.error(error.response?.data.message, );
       }
     }
   }
@@ -212,7 +215,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         createCategory,
         createTransaction,
         getTransactions,
-        deleteTransaction
+        deleteTransaction,
       }}
     >
       {children}

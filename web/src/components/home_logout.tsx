@@ -1,7 +1,7 @@
 import useAuth from "@/hooks/useAuth";
 import LoginForm from "./login_form";
-import Loading from "./loading";
 import clsx from "clsx";
+import { Spinner } from "./ui/spinner";
 
 function HomeLogOut() {
   const { loading } = useAuth();
@@ -9,7 +9,7 @@ function HomeLogOut() {
     <div className="font-sans relative flex items-center justify-start pt-32 flex-col space-y-2 min-h-screen">
       {loading && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <Loading size={164} />
+          <Spinner className="size-36 text-cyan-500" />
         </div>
       )}
       <div className={clsx({ "blur-[4px] opacity-50": loading })}>

@@ -15,27 +15,25 @@ function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full flex flex-col pt-4">
-      <div>
+    <div className="flex min-h-screen w-full flex-col pt-4">
+      <div className="space-y-4">
         <Dashboard />
-        <div className="flex flex-col gap-4 items-center justify-center">
-          <CreateTransactionDialog />
 
-          <div className="w-full items-center justify-center ">
-            <CreateCategoryDialog />
-            <SelectPeriodDialog />
-          </div>
+        <div className="flex w-full flex-row items-center justify-evenly">
+          <CreateCategoryDialog />
+          <CreateTransactionDialog />
+          <SelectPeriodDialog />
         </div>
       </div>
-      <div className="w-full flex items-center justify-center pt-4">
+      <div className="flex w-full items-center justify-center py-4">
         <button
-          className="uppercase text-lg p-2  bg-white/5 font-display rounded-lg"
+          className="font-display rounded-lg bg-white/5 p-2 text-lg uppercase"
           onClick={logout}
         >
           <div
             className={clsx(
               "bg-gradient-to-tr from-blue-500 via-cyan-500 to-cyan-300 bg-clip-text text-transparent",
-              loading && "disabled"
+              loading && "disabled",
             )}
           >
             logout

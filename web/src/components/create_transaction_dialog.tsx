@@ -51,7 +51,7 @@ function CreateTransactionDialog() {
   }
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger className="bg-white/10 p-4 rounded-full focus-within:ring-cyan-500 focus-within:ring-2 transition-colors duration-150 ease-in-out cursor-pointer hover:shadow-md">
+      <DialogTrigger className="cursor-pointer rounded-full bg-white/10 p-4 transition-colors duration-150 ease-in-out outline-none focus-within:ring-2 focus-within:ring-cyan-500 hover:shadow-md">
         <FaPlus className="size-6" />
       </DialogTrigger>
       <DialogContent>
@@ -93,14 +93,13 @@ function CreateTransactionDialog() {
                     <Button
                       variant="outline"
                       id="date"
-                      className="w-full justify-between 
-                      "
+                      className="w-full justify-between border border-transparent focus:border-cyan-500 active:border-cyan-500 has-focus:border has-focus:border-cyan-500"
                     >
                       {date ? (
                         date.toLocaleDateString()
                       ) : (
                         <span className="text-muted-foreground">
-                          Select date
+                          Selecione uma data
                         </span>
                       )}
                       <ChevronDownIcon className="text-muted-foreground" />

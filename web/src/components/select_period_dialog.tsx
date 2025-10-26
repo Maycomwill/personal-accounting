@@ -27,7 +27,7 @@ function SelectPeriodDialog() {
   return (
     <Dialog open={modalOpen} onOpenChange={setModalOpen}>
       <DialogTrigger asChild>
-        <Button className="w-1/2" size={"lg"} variant={"link"}>
+        <Button className="w-1/3" size={"lg"} variant={"link"}>
           Alterar período
         </Button>
       </DialogTrigger>

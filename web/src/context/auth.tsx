@@ -7,6 +7,7 @@ import type {
 } from "@/interfaces";
 import { AxiosError, type AxiosResponse } from "axios";
 import { createContext, type ReactNode, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export interface AuthContextProps {
   logged: boolean;
@@ -62,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLogged(false);
         setLoading(false);
         window.localStorage.removeItem("token");
-        return;
+        return toast.error("Sessão expirada. Faça login novamente.");
       }
     }
   }
@@ -88,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           password,
         });
 
-      console.log(server_response.data);
+      toast.success(server_response.data.message);
       return setTimeout(() => {
         setLoading(false);
         location.replace("/");
@@ -116,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           reminder,
         }
       );
-      // console.log(server_response.data);
+      toast.success(server_response.data.message);
 
       return setTimeout(() => {
         window.localStorage.setItem("token", server_response.data.token);
